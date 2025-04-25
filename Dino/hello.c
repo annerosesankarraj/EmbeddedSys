@@ -31,13 +31,13 @@ void set_pos(const vga_ball_pos_t *pos) {
 // Function to handle smooth animation for jumping and ducking
 void animate_movement(vga_ball_pos_t *pos, int start_y, int target_y) {
     struct timespec start_time, current_time;
-    double elapsed_time, animation_duration = 1.0; // 1 second for full animation
+    double elapsed_time, animation_duration = 0.6; // 0.6 second for full animation (increased speed)
     int current_y;
     
     // Get the current time as start time
     clock_gettime(CLOCK_MONOTONIC, &start_time);
     
-    // Animation loop for 1 second
+    // Animation loop
     do {
         // Get current time
         clock_gettime(CLOCK_MONOTONIC, &current_time);
@@ -65,7 +65,7 @@ void animate_movement(vga_ball_pos_t *pos, int start_y, int target_y) {
         set_pos(pos);
         
         // Small delay to control animation framerate
-        usleep(16667); // ~60fps (1/60 second)
+        usleep(10000); // ~100fps (1/100 second) for smoother animation
         
     } while (elapsed_time < animation_duration);
     
@@ -165,15 +165,15 @@ int main() {
                             if (code == 0x41) {  // 'A' = Up arrow - Jump
                                 animation_in_progress = 1;
                                 
-                                // Jump up 32*32 pixels (actually jumping up by 32 pixels)
-                                animate_movement(&pos, base_y, base_y - 32);
+                                // Jump up 1.5 tiles (48 pixels)
+                                animate_movement(&pos, base_y, base_y - 48);
                                 
                                 animation_in_progress = 0;
                             } else if (code == 0x42) {  // 'B' = Down arrow - Duck
                                 animation_in_progress = 1;
                                 
-                                // Duck down 32*32 pixels (actually ducking down by 32 pixels)
-                                animate_movement(&pos, base_y, base_y + 32);
+                                // Duck down 1.5 tiles (48 pixels)
+                                animate_movement(&pos, base_y, base_y + 48);
                                 
                                 animation_in_progress = 0;
                             }
